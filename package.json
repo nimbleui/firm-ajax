@@ -1,7 +1,8 @@
 {
   "name": "firm-ajax",
-  "version": "0.5.0",
+  "version": "1.0.2",
   "description": "",
+  "preview": false,
   "main": "dist/firmAjax.min.js",
   "scripts": {
     "build": "webpack --env NODE_ENV=production",
@@ -21,17 +22,21 @@
     "vue",
     "react"
   ],
+  "files": [
+    "dist",
+    "lib"
+  ],
   "author": "Chen YuYun",
   "license": "MIT",
   "typings": "./lib/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/CYuYun/firmAjax.git"
+    "url": "https://github.com/CYuYun/firm-ajax.git"
   },
   "bugs": {
-    "url": "https://github.com/CYuYun/firmAjax/issues"
+    "url": "https://github.com/CYuYun/firm-ajax/issues"
   },
-  "homepage": "https://github.com/CYuYun/firmAjax",
+  "homepage": "https://github.com/CYuYun/firm-ajax",
   "unpkg": "dist/firmAjax.min.js",
   "devDependencies": {
     "@babel/core": "^7.12.10",
@@ -55,9 +60,5 @@
     "webpack": "^5.10.3",
     "webpack-cli": "^4.2.0",
     "webpack-dev-server": "^3.11.0"
-  },
-  "dependencies": {
-    "@babel/polyfill": "^7.12.1",
-    "core-js": "^3.8.1"
   }
 }
