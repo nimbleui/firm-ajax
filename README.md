@@ -163,7 +163,7 @@ firmAjax.use("download", (event) => {
 });
 ```
 
-### 设置公共的配置项 firmAjax.create(config)
+### 设置公共的配置项 firmAjax.setPublicConfig(config)
 
 ```js
 firmAjax.setPublicConfig({
