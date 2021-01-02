@@ -1,0 +1,20 @@
+{
+  "editor.formatOnType": true,
+  "editor.formatOnSave": true, // #每次保存的时候自动格式化
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
+  },
+  "eslint.enable": true, //是否开启vscode的eslint
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    { 
+      "language": "typescript",
+      "autoFix": true
+    },
+    { 
+      "language": "typescriptreact",
+      "autoFix": true
+    }
+  ]
+}
