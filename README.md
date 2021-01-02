@@ -92,75 +92,118 @@ firmAjax({
 });
 ```
 
+### 配置参数 config
+
+```js
+{
+  //
+  baseUrl?: string;
+  method?: Method;
+  timeout?: number;
+  headers?: any;
+  params?: any;
+  url?: string;
+  data?: any;
+  xsrfCookieName?: string;
+  xsrfHeaderName?: string;
+  withCredentials?: boolean;
+  isUploadProgress?: boolean;
+  isDownloadProgress?: boolean;
+  validateStatus?: Array<number>;
+  responseType?: XMLHttpRequestResponseType;
+}
+```
+
 ### `use`中间件
 
 ```js
-// 发起第一个请求中间件，返回值是给`allRequestEnd`中间件用
+// 当前页面发起第一个请求执行中间件，
 firmAjax.use("firstRequest", () => {
-  // 这个中间件是一个页面里发起第一个请求，可以用于显示加载提示等等操作
-  console.log("第一个发起请求");
-  return {
-    loading: {},
-  };
-});
+  console.log("发起第一个请求")
+  const toast = Toast.loading({
+    duration: 0,
+    forbidClick: true,
+    message: '加载中...',
+  })
+  return toast
+})
 
-// 所有请求结束，res是{firstResult: firstRequest中间件返回值,totalTime:所有请求完所有时间}
-firmAjax.use("allRequestEnd", (res) => {
-  // 所有请求完所有时间，可以防止加载提示框闪烁，如果totalTime小于350ms，可以用定时器延迟，firstResult可以是加载提示框对象，这样就可以用于加载提示框
-  const { totalTime, firstResult } = res;
-  if (totalTime < 450) {
-    setTimeout(() => {
-      firstResult.close();
-    }, 450 - totalTime);
-  } else {
-    firstResult.close();
+// 当前页面所有请求结束执行中间件
+firmAjax.use("allRequestEnd", (event) => {
+  console.log(event)
+  // event：firstResult：是firstRequest中间件执行返回值
+  //        totalTime：所有请求结束所用时间
+  const { firstResult, totalTime } = event;
+  const time = 600 - totalTime;
+  // 意思是加载框至少显示600ms
+  if (time > 0) {
+    return setTimeout(() => {
+      firstResult.clear()
+      console.log("关闭弹窗")
+    }, time)
   }
-});
+  firstResult.clear()
+})
 
-// 请求前执行中间 config是配置参数
+// 每个请求发起之前执行中间件，必须有返回值，否则修改无效
 firmAjax.use("beforeRequest", (config) => {
+  // config是配置参数
   const { headers = {} } = config;
+  const token = "token"
+
+  // 修改配置参数
   config.headers = {
     ...headers,
-  };
+    Authorization: token
+  }
 
-  // 必须有return，否则修改无效
   return config;
-});
+})
 
-// 返回值之前执行中间件，response是返回值，该函数必须返回值，否则修改无效
+// 每个请求结束执行中间件，必须有返回值，否则修改无效
 firmAjax.use("beforeResponse", (response) => {
-  const { data } = response;
+  const { data, config, headers } = response;
+  // data: 请求返回值
+  // config: 配置参数
+  // headers: 响应头
+  console.log(config)
+  console.log(headers)
   if (data.Code === 0) {
     return data.Data;
   }
   return Promise.reject("请求错误");
-});
+})
 
-// 请求失败执行中间件，error是返回值，该函数必须返回值，否则修改无效
+// 每个请求失败执行中间件，必须返回值，否则修改无效
 firmAjax.use("error", (error) => {
   console.log(error);
   console.log(error.code);
   return error;
 });
 
-// 监听上传的中间件，要在config中配置isUploadProgress: true
+// 监听上传的中间件，对应请求config中配置isUploadProgress: true
 firmAjax.use("upload", (event) => {
   const { url, schedule, method } = event;
   // url: config中的url
   // method: config中的method
   // schedule: 上传进度
-  console.log(event.schedule);
+  console.log(url);
+  console.log(method);
+  console.log(schedule);
 });
 
-// 监听下载的中间件，要在config中配置isDownloadProgress: true
+// 监听下载的中间件，对应请求config中配置isDownloadProgress: true
 firmAjax.use("download", (event) => {
   const { url, schedule, method } = event;
   // url: config中的url
   // method: config中的method
   // schedule: 下载进度
-  console.log(event);
+  console.log(url);
+  console.log(method);
+  console.log(schedule);
 });
+
+// 注意：以上每个中间件都可以绑定多个
 ```
 
 ### 设置公共的配置项 firmAjax.setPublicConfig(config)

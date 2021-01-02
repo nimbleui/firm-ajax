@@ -58,7 +58,7 @@ module.exports = (env) => {
       port: 9000,
       before: function (app) {
         app.use(bodyParser.json());
-        app.get("/api/get", (req, res) => {
+        app.get("/api/get", (req, res) => { 
           const query = req.query;
           res.json({
             Code: 0,

@@ -8,7 +8,7 @@
     "build": "webpack --env NODE_ENV=production",
     "dev": "webpack serve --env NODE_ENV=development",
     "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix",
-    "prepublishOnly": "npm run build",
+    "prepublishOnly": "npm run test && npm run build",
     "test": "jest",
     "test-c": "jest --coverage"
   },
